@@ -550,8 +550,8 @@ git_configure() {
 
 # handle multi-user brew issue
 unalias brew 2>/dev/null
-brewser=$(stat -f "%Su" $(which brew))
-alias brew='sudo -Hu '$brewser' brew'
+BREWUSER=$(stat -f "%Su" $(which brew))
+alias brew='sudo -Hu '${BREWUSER}' brew'
 
 export PATH="/opt/homebrew/opt/mysql-client@8.4/bin:$PATH"
 export LDFLAGS="-L/opt/homebrew/opt/mysql-client@8.4/lib"
