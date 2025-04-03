@@ -1,0 +1,9 @@
+**/.idea
+**/.terraform.lock.hcl
+**/.terraform
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/__pycache__/
+**/.python-version
+**/.envrc
+**/.stignore
