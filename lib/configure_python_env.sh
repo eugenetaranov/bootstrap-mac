@@ -1,5 +1,7 @@
 #!/bin/sh
 
+pyenv install 3.13.2
+pyenv global 3.13.2
 python -m venv ~/.venv
 
 # shellcheck disable=SC1090
