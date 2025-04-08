@@ -221,11 +221,50 @@ function keit() {
   kubectl exec -ti "$1" -- bash
 }
 
-
-
 function recent_branches () {
-#  git for-each-ref --count=1000 --sort=-committerdate --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))' | fzf
-    ~/Dropbox/mac/scripts/recent_branches.py
+  local green="%F{green}"
+  local blue="%F{blue}"
+  local yellow="%F{yellow}"
+  local grey="%F{242}"
+  local reset="%f"
+
+  local branches
+  branches=$(git for-each-ref --sort=-committerdate \
+    --format='%(refname:short) %(committerdate:iso8601) %(authorname)' refs/heads/ | while read -r line; do
+    local branch_name commit_date author_name
+    branch_name="${line%% *}"
+    line="${line#* }"
+    commit_date="${line%% *}"
+    author_name="${line#* }"
+
+    local color_commit_date
+    if [[ "$branch_name" == "main" || "$branch_name" == "master" ]]; then
+      color_commit_date="${blue}${commit_date}${reset}"
+    else
+      color_commit_date="${yellow}${commit_date}${reset}"
+    fi
+
+    # Apply color to branch name and commit date
+    echo -e "${green}${branch_name}${reset} (${color_commit_date} by ${grey}${author_name}${reset})"
+  done)
+
+  # If no branches, return early
+  [[ -z "$branches" ]] && return
+
+  # Let user select branch using fzf, removing colors from branch names
+  local selected_line
+  selected_line=$(echo "$branches" | sed -e 's/%F{[^}]*}//g' -e 's/%f//g' | fzf --ansi)
+
+  # If no selection, return
+  [[ -z "$selected_line" ]] && return
+
+  # Extract the branch name (no color codes) and check it out
+  local selected_branch
+  selected_branch=$(echo "$selected_line" | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $1}')
+
+  if [[ -n "$selected_branch" ]]; then
+    git checkout "$selected_branch"
+  fi
 }
 
 function upload_rundeck () {
