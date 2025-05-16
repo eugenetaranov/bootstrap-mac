@@ -120,6 +120,8 @@ alias kev='kubectl get events --sort-by=.metadata.creationTimestamp'
 alias kgn='kubectl get nodes --sort-by=.metadata.creationTimestamp'
 alias kdn='kubectl describe node'
 
+alias sternf='stern --only-log-lines --no-follow'
+
 # source ~/.powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -599,4 +601,4 @@ export CPPFLAGS="-I/opt/homebrew/opt/mysql-client@8.4/include"
 unsetopt share_history
 
 # loading default venv
-source ~/.venv/bin
+source ~/.venv/bin/activate
